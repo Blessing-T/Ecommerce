@@ -30,7 +30,7 @@ const StoreNavBar = () => {
     let prevPositionY = 0;
     if (typeof window !== "undefined") prevPositionY = window.scrollY;
     const handleScroll = () => {
-      //---handle auto hiding navbar
+     
       if (window !== undefined) {
         const shouldHideNavbar = prevPositionY < window.scrollY && window.scrollY > 100;
         setHideNavbar(shouldHideNavbar);
@@ -100,13 +100,13 @@ const StoreNavBar = () => {
           </div>
           <ul className="flex items-center">
             <li className="hidden lg:block">
-              <Link href={""} className="text-sm hover:bg-gray-100 py-2 px-4 rounded-lg transition-all duration-150">
+              <Link href="/pc-builder" className="text-sm hover:bg-gray-100 py-2 px-4 rounded-lg transition-all duration-150">
                 PC Configuration
               </Link>
             </li>
             <li className="gap-2">
               <Link
-                href={""}
+                href="/list/deals"
                 className="text-sm bg-[url('/icons/discountIcon.svg')] bg-[0px_10px] bg-no-repeat text-red-900 flex gap-1 md:visible hover:bg-gray-100 py-2 pl-5 pr-4 rounded-lg transition-all duration-150"
               >
                 Top Deals

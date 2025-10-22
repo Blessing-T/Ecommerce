@@ -1,5 +1,6 @@
-"use-client";
+"use client";
 
+import Link from "next/link";
 import { useRef } from "react";
 
 import { ProfileIcon } from "@/shared/components/icons/svgIcons";
@@ -27,7 +28,7 @@ const NavBarProfile = () => {
         <ProfileIcon width={16} className="fill-white transition-all duration-300 stroke-gray-500 stroke-2" />
         <span className="select-none hidden lg:block">Account</span>
       </Button>
-      {/* TODO: Create hook for menu */}
+     
       <div
         ref={menuRef}
         className={cn(
@@ -35,8 +36,12 @@ const NavBarProfile = () => {
           isActive && "scale-100 visible opacity-100"
         )}
       >
-        <Button className="border-white font-semibold text-sm hover:bg-gray-100">Sign In</Button>
-        <Button className="border-white font-semibold text-sm hover:bg-gray-100">Sign Up</Button>
+        <Link href="/login" className="w-full">
+          <Button className="border-white font-semibold text-sm hover:bg-gray-100 w-full">Sign In</Button>
+        </Link>
+        <Link href="/signup" className="w-full">
+          <Button className="border-white font-semibold text-sm hover:bg-gray-100 w-full">Sign Up</Button>
+        </Link>
       </div>
     </div>
   );
