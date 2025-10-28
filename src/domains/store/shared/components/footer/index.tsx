@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import React from "react";
 
 import { FacebookIcon, InstagramIcon, LinkedinIcon, XIcon } from "@/shared/components/icons/svgIcons";
 import Button from "@/shared/components/UI/button";
@@ -54,11 +55,11 @@ const Footer = () => {
           <div>
             <h3 className="text-lg text-gray-900 font-medium mt-9 mb-4">Contact Us</h3>
             <span className="text-gray-500 block text-sm leading-5">Got Question? Call us 24/7</span>
-            <h2 className="text-blue-600 font-medium my-2">+49 30 575909881</h2>
+            <h2 className="text-blue-600 font-medium my-2">+263 785 432 857</h2>
             <span className="text-gray-500 block text-sm leading-5">
-              685 Market Street, San Francisco, CA 94105, US
+             6 Dale Crescent, Victoria Falls, Zimbabwe
             </span>
-            <span className="text-gray-500 block text-sm leading-5">nonamecompany@justportfolio.com</span>
+            <span className="text-gray-500 block text-sm leading-5">musiringofatariro@gmail.com</span>
           </div>
           <div>
             <h3 className="text-lg text-gray-900 font-medium mt-9 mb-4">Categories</h3>
@@ -103,7 +104,7 @@ const Footer = () => {
       </div>
       <section className="w-full xl:h-20 bg-gray-100 text-sm">
         <div className="h-full flex-col gap-4 xl:flex-row xl:gap-0 justify-between items-center storeContainer">
-          <span className="text-gray-500 mt-6 xl:mt-0">© {CURRENT_YEAR} BITEX Store. All Rights Reserved.</span>
+          <span className="text-gray-500 mt-6 xl:mt-0">© {CURRENT_YEAR} Glitch Labz. All Rights Reserved.</span>
           <ul className="gap-4 flex flex-col my-6 sm:my-0 sm:flex-row text-gray-800 font-medium">
             {LEGALS.map((item) => (
               <li

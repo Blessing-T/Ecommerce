@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useSession, signOut } from "next-auth/react";
 import { useRef } from "react";
 
 import { ProfileIcon } from "@/shared/components/icons/svgIcons";
@@ -15,6 +16,7 @@ const NavBarProfile = () => {
   const toggleMenu = () => {
     setIsActive((prev) => !prev);
   };
+  const { data: session } = useSession();
 
   return (
     <div className="relative">
@@ -28,7 +30,7 @@ const NavBarProfile = () => {
         <ProfileIcon width={16} className="fill-white transition-all duration-300 stroke-gray-500 stroke-2" />
         <span className="select-none hidden lg:block">Account</span>
       </Button>
-     
+      
       <div
         ref={menuRef}
         className={cn(
@@ -36,12 +38,31 @@ const NavBarProfile = () => {
           isActive && "scale-100 visible opacity-100"
         )}
       >
-        <Link href="/login" className="w-full">
-          <Button className="border-white font-semibold text-sm hover:bg-gray-100 w-full">Sign In</Button>
-        </Link>
-        <Link href="/signup" className="w-full">
-          <Button className="border-white font-semibold text-sm hover:bg-gray-100 w-full">Sign Up</Button>
-        </Link>
+        {/* show session-based menu */}
+        {session?.user ? (
+          <>
+            <div className="w-full px-2 py-2 text-left text-sm text-gray-700">Signed in as</div>
+            <div className="w-full px-2 pb-2 text-left font-medium">{session.user.name ?? session.user.email}</div>
+            <Link href="/account" className="w-full">
+              <Button className="border-white font-semibold text-sm hover:bg-gray-100 w-full">My Account</Button>
+            </Link>
+            <button
+              onClick={() => signOut({ callbackUrl: "/" })}
+              className="w-full"
+            >
+              <Button className="border-white font-semibold text-sm hover:bg-gray-100 w-full">Sign Out</Button>
+            </button>
+          </>
+        ) : (
+          <>
+            <Link href="/login" className="w-full">
+              <Button className="border-white font-semibold text-sm hover:bg-gray-100 w-full">Sign In</Button>
+            </Link>
+            <Link href="/signup" className="w-full">
+              <Button className="border-white font-semibold text-sm hover:bg-gray-100 w-full">Sign Up</Button>
+            </Link>
+          </>
+        )}
       </div>
     </div>
   );

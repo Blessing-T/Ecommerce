@@ -1,8 +1,16 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 
+import { ShoppingIconFill } from "@/shared/components/icons/svgIcons";
 import { TProductCard } from "@/shared/types/common";
+import { TProductPageInfo } from "@/shared/types/product";
 import { cn } from "@/shared/utils/styling";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { addToCart } from "@/store/slices/cartSlice";
+import { addToWishlist, removeFromWishlist } from "@/store/slices/wishlistSlice";
+import { RootState } from "@/store/store";
 
 const ProductCard = ({
   name,
@@ -14,6 +22,54 @@ const ProductCard = ({
   isAvailable = true,
   staticWidth = false,
 }: TProductCard) => {
+  const dispatch = useAppDispatch();
+  const wishlistItems = useAppSelector((state: RootState) => state.wishlist?.items ?? []);
+  
+  const productId = url.split("/").pop() || name || Math.random().toString();
+  const isInWishlist = wishlistItems.some((item: TProductPageInfo) => item.id === productId);
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!isAvailable) return;
+    const product = {
+      id: productId,
+      name: name || "Unknown Product",
+      images: imgUrl && imgUrl.length > 0 ? imgUrl : ["/images/placeholder.png"],
+      price: typeof price === "number" ? price : 0,
+      isAvailable,
+      desc: "",
+      optionSets: [],
+      specialFeatures: specs || [],
+      specifications: [],
+      path: [],
+      salePrice: dealPrice || null,
+    };
+    dispatch(addToCart(product));
+  };
+
+  const handleToggleWishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const product = {
+      id: productId,
+      name: name || "Unknown Product",
+      images: imgUrl && imgUrl.length > 0 ? imgUrl : ["/images/placeholder.png"],
+      price: typeof price === "number" ? price : 0,
+      isAvailable,
+      desc: "",
+      optionSets: [],
+      specialFeatures: [],
+      specifications: [],
+      path: [],
+      salePrice: dealPrice || null,
+    };
+    if (isInWishlist) {
+      dispatch(removeFromWishlist(productId));
+    } else {
+      dispatch(addToWishlist(product));
+    }
+  };
   return (
     <Link
       href={url}
@@ -31,14 +87,14 @@ const ProductCard = ({
       )}
       <div className="imageWrapper hover:border-gray-300 w-full h-[225px] block relative rounded-xl border border-gray-200 overflow-hidden transition-all duration-500">
         <Image
-          src={imgUrl[0]}
+          src={imgUrl && imgUrl[0] ? imgUrl[0] : "/images/placeholder.png"}
           alt={name}
           fill
           sizes="(max-width: 240px)"
           className="object-contain transition-all duration-400 ease-out"
         />
         <Image
-          src={imgUrl[1]}
+          src={imgUrl && imgUrl[1] ? imgUrl[1] : "/images/placeholder.png"}
           alt={name}
           fill
           sizes="(max-width: 240px)"
@@ -82,8 +138,26 @@ const ProductCard = ({
             </span>
           )}
         </div>
-        <div className="flex-grow text-right">
-          <button className="cursor-pointer size-9 border-none bg-no-repeat bg-center rounded-sm opacity-60 transition-opacity duration-300 hover:opacity-100 bg-black/0 bg-[url('/icons/heartIcon.svg')] bg-[length:20px_18px]" />
+        <div className="flex-grow text-right flex gap-2 justify-end">
+          <button
+            onClick={handleAddToCart}
+            className={cn(
+              "cursor-pointer flex items-center justify-center size-9 border border-gray-200 bg-white rounded-lg transition-all duration-300",
+              isAvailable 
+                ? "hover:border-red-500 hover:bg-red-50 active:bg-red-100" 
+                : "opacity-50 cursor-not-allowed"
+            )}
+            disabled={!isAvailable}
+          >
+            <ShoppingIconFill width={16} className="fill-gray-600" />
+          </button>
+          <button 
+            onClick={handleToggleWishlist}
+            className={cn(
+              "cursor-pointer size-9 border-none bg-no-repeat bg-center rounded-sm transition-opacity duration-300 bg-black/0 bg-[url('/icons/heartIcon.svg')] bg-[length:20px_18px]",
+              isInWishlist ? "opacity-100" : "opacity-60 hover:opacity-100"
+            )} 
+          />
         </div>
       </div>
     </Link>

@@ -26,9 +26,16 @@ const Login = () => {
       ...loginData,
       redirect: false,
     })
-      .then((callback) => {
+      .then(async (callback) => {
         if (callback?.ok) {
-          router.push("/admin");
+          const session = await fetch('/api/auth/session');
+          const sessionData = await session.json();
+          
+          if (sessionData?.user?.role === 'ADMIN') {
+            router.push("/admin");
+          } else {
+            router.push("/");  // redirect to shopping page for customers
+          }
         }
 
         if (callback?.error) {

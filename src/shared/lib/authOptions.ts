@@ -3,6 +3,8 @@ import bcrypt from "bcrypt";
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
+import type { ExtendedUser } from "@/shared/types/auth";
+
 import { db } from "./db";
 
 export const authOptions: NextAuthOptions = {
@@ -23,6 +25,13 @@ export const authOptions: NextAuthOptions = {
           where: {
             email: credentials.email,
           },
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            hashedPassword: true,
+            role: true,
+          }
         });
 
         if (!user || !user?.hashedPassword) {
@@ -35,10 +44,30 @@ export const authOptions: NextAuthOptions = {
           throw new Error("Invalid credentials");
         }
 
-        return user;
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role
+        };
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        const extendedUser = user as unknown as ExtendedUser;
+        token.role = extendedUser.role;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.role = token.role;
+      }
+      return session;
+    },
+  },
   pages: {
     signIn: "/login",
   },

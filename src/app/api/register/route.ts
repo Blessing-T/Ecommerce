@@ -26,12 +26,13 @@ export async function POST(request: Request) {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Create user
+    // Create user with CUSTOMER role
     const user = await db.user.create({
       data: {
         email,
         name,
         hashedPassword,
+        role: "CUSTOMER",
       },
     });
 
