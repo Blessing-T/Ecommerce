@@ -13,34 +13,36 @@ interface CartItemProps {
 export const CartItem = ({ item }: CartItemProps) => {
   const dispatch = useAppDispatch();
 
+  const product = item.product;
+
   return (
     <div className="flex items-center py-4 px-6 bg-white rounded-lg shadow-sm mb-4">
       <div className="relative h-20 w-20 mr-4">
         <Image
-          src={item.product.images?.[0] || '/images/placeholder.png'}
-          alt={item.product.name || 'Product Image'}
+          src={product?.images?.[0] || '/images/placeholder.png'}
+          alt={product?.name || 'Product Image'}
           fill
           className="object-contain"
         />
       </div>
       <div className="flex-grow">
-        <h3 className="font-medium text-gray-900">{item.product.name}</h3>
+        <h3 className="font-medium text-gray-900">{product?.name ?? 'Product'}</h3>
         <div className="text-xs text-gray-500 mb-1">Quantity: {item.quantity}</div>
         <p className="text-gray-600">
-          {item.product.salePrice ? (
+          {product?.salePrice ? (
             <>
               <span className="line-through text-sm mr-2">
-                €{(item.product.price || 0).toFixed(2)}
+                €{(product?.price ?? 0).toFixed(2)}
               </span>
-              <span className="text-red-600">€{(item.product.salePrice || 0).toFixed(2)}</span>
+              <span className="text-red-600">€{(product?.salePrice ?? 0).toFixed(2)}</span>
             </>
           ) : (
-            <span>€{(item.product.price || 0).toFixed(2)}</span>
+            <span>€{(product?.price ?? 0).toFixed(2)}</span>
           )}
         </p>
       </div>
       <button
-        onClick={() => dispatch(removeFromCart(item.product.id))}
+        onClick={() => dispatch(removeFromCart(product?.id ?? (item as any).productId))}
         title="Remove all from cart"
         className="ml-4 p-2 text-red-600 hover:bg-red-50 rounded-full transition-colors"
       >

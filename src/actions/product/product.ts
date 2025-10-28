@@ -180,6 +180,82 @@ export const deleteProduct = async (productID: string) => {
   }
 };
 
+export const getProductForEdit = async (productID: string) => {
+  if (!productID || productID === "") return { error: "Invalid Product ID!" };
+
+  try {
+    const result = await db.product.findFirst({
+      where: { id: productID },
+      select: {
+        id: true,
+        name: true,
+        desc: true,
+        images: true,
+        price: true,
+        salePrice: true,
+        specs: true,
+        specialFeatures: true,
+        isAvailable: true,
+        brandID: true,
+        categoryID: true,
+      },
+    });
+
+    if (!result) return { error: "Product not found" };
+
+    // Map DB shape to form values
+    const formValues: TAddProductFormValues = {
+      name: result.name || "",
+      desc: result.desc || "",
+      images: result.images || [],
+      price: result.price?.toString() || "",
+      salePrice: result.salePrice != null ? String(result.salePrice) : "",
+      specifications: result.specs || [],
+      specialFeatures: result.specialFeatures || ["", "", ""],
+      isAvailable: result.isAvailable || false,
+      brandID: result.brandID || "",
+      categoryID: result.categoryID || "",
+    };
+
+    return { res: { id: result.id, formValues } };
+  } catch (error) {
+    return { error: JSON.stringify(error) };
+  }
+};
+
+export const updateProduct = async (productID: string, data: TAddProductFormValues) => {
+  if (!productID || productID === "") return { error: "Invalid Product ID!" };
+
+  // Basic validation
+  if (!data.name || data.name.length < 3) return { error: "Invalid product name" };
+
+  try {
+    const price = data.price ? parseFloat(data.price.replace(/,/, '.')) : 0;
+    const salePrice = data.salePrice ? parseFloat(data.salePrice.replace(/,/, '.')) : null;
+
+    const result = await db.product.update({
+      where: { id: productID },
+      data: {
+        name: data.name,
+        desc: data.desc,
+        images: data.images,
+        price: price,
+        salePrice: salePrice,
+        specialFeatures: data.specialFeatures,
+        isAvailable: data.isAvailable,
+        brandID: data.brandID,
+        specs: data.specifications,
+        categoryID: data.categoryID,
+      },
+    });
+
+    if (!result) return { error: "Can't update product" };
+    return { res: result };
+  } catch (error) {
+    return { error: JSON.stringify(error) };
+  }
+};
+
 const generateSpecTable = async (rawSpec: ProductSpec[]) => {
   try {
     const specGroupIDs = rawSpec.map((spec) => spec.specGroupID);

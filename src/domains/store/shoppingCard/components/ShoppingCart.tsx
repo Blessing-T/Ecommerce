@@ -13,7 +13,8 @@ interface ShoppingCartProps {
 export const ShoppingCart = ({ isVisible, handleOnClose }: ShoppingCartProps) => {
   const cartItems = useAppSelector((state: RootState) => state.cart.items || []);
   const total = cartItems.reduce((acc, item) => {
-    return acc + ((item.product.salePrice || item.product.price) * item.quantity);
+    const unitPrice = (item.product?.salePrice ?? item.product?.price ?? 0);
+    return acc + unitPrice * (item.quantity ?? 0);
   }, 0);
 
   if (cartItems.length === 0) {
@@ -48,8 +49,8 @@ export const ShoppingCart = ({ isVisible, handleOnClose }: ShoppingCartProps) =>
       </div>
       <div className="p-4">
         <div className="mb-6">
-          {cartItems.map((item) => (
-            <CartItem key={item.product.id} item={item} />
+          {cartItems.map((item, idx) => (
+            <CartItem key={item.product?.id ?? (item as any).productId ?? idx} item={item} />
           ))}
         </div>
         <div className="border-t pt-4">

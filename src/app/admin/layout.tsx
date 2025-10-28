@@ -15,12 +15,26 @@ const AdminLayout = async ({ children }: { children: React.ReactNode }) => {
     redirect("/");
   }
   return (
-    <div className="styles.adminLayout flex min-h-screen">
+    <div className="min-h-screen flex bg-slate-50">
       <AdminSidebar />
-      <div className="w-full p-6">
-        <h1 className="w-full block text-gray-700 text-2xl font-light pb-5 mb-2 border-b border-gray-300">Page Name</h1>
-        {children}
-      </div>
+      <main className="w-full p-6">
+        <header className="mb-6 flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl font-semibold text-slate-800">Admin Dashboard</h1>
+            <p className="text-sm text-slate-500">Manage categories, products, brands and traffic</p>
+          </div>
+          <div className="text-right">
+            <span className="text-sm text-slate-600 mr-2">Signed in as</span>
+            <div className="inline-block bg-white px-3 py-1 rounded-md shadow-sm text-sm text-slate-800">
+              {session?.user?.name ?? session?.user?.email ?? "Admin"}
+            </div>
+          </div>
+        </header>
+
+        <section className="bg-white rounded-lg shadow-sm p-6 border border-slate-100">
+          {children}
+        </section>
+      </main>
     </div>
   );
 };
